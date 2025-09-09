@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Card from "./Card";
+import RegisterCompany from "./RegisterCompany";
 
 interface DashboardProps {
   activeTab: "companies" | "analytics";
@@ -58,9 +59,15 @@ const data = [
 ];
 export default function Dashboard({ activeTab }: DashboardProps) {
   return (
-    <div className="bg-white rounded-xl shadow p-6">
-      <AnimatePresence mode="wait">
-        {activeTab === "companies" && (
+    <AnimatePresence mode="wait">
+      {activeTab === "companies" && (
+        <>
+          <div className="flex justify-between items-center my-6 ">
+            <h1 className="text-black">შენი კემპინგი</h1>
+            <button className="px-4 py-2 rounded-lg text-white bg-[#3B82F6]">
+              დაიწყე ახალი კემპინგი
+            </button>
+          </div>
           <motion.div
             key="companies"
             initial={{ opacity: 0, x: -20 }}
@@ -73,20 +80,25 @@ export default function Dashboard({ activeTab }: DashboardProps) {
               <Card key={item.id} data={item} />
             ))}
           </motion.div>
-        )}
-
-        {activeTab === "analytics" && (
-          <motion.div
-            key="analytics"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <h2 className="text-xl font-semibold mb-4">ანალიტიკა</h2>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+        </>
+      )}
+      <div className="flex justify-between items-center my-6 ">
+        <h1 className="text-black">ანალიტიკა</h1>
+        <button className="px-4 py-2 rounded-lg text-white bg-[#3B82F6]">
+          კომპანიის შემქმნა
+        </button>
+      </div>
+      {activeTab === "analytics" && (
+        <motion.div
+          key="analytics"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+          <RegisterCompany />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

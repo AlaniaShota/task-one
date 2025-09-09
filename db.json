@@ -1,0 +1,14 @@
+{
+  "companies": [
+    {
+      "id": "79a7",
+      "paymentModel": 1000,
+      "offerType": "testing target",
+      "description": "testing target",
+      "budget": 1200,
+      "name": "testing target",
+      "platforms": ["instagram", "tiktok", "facebook"],
+      "targetCreatorType": "სამიზნე შემქმნელების ტიპი"
+    }
+  ]
+}

@@ -1,7 +1,6 @@
 import React from "react";
 import {
   ChartBarIcon,
-  ChatBubbleLeftRightIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
 
