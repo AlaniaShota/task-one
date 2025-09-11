@@ -1,41 +1,51 @@
+
 import React from "react";
 import {
   ChartBarIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
-
+import Image from "next/image";
 interface CardProps {
-  id: number;
-  status: "აქტიური" | "დასრულებული";
-  creator: string;
-  watch: string;
-  budget: string;
-  totalBudget: string;
+  id: string;
+  mediaLink: string;
+  mediaFile: string;
+  paymentModel: number;
+  offerType: string;
+  description: string;
+  budget: number;
+  name: string;
 }
 
 const Card: React.FC<{ data: CardProps }> = ({ data }) => {
-  const [current, total] = data.budget
-    .replace(/\$|,/g, "")
-    .split(" / ")
-    .map(Number);
-  const progress = Math.min((current / total) * 100, 100);
+  const progress = Math.min((data.budget / data.paymentModel) * 100, 30);
 
   return (
     <div className=" rounded-lg overflow-hidden shadow-lg relative w-full">
       <div
-        className={`absolute top-2 left-2 px-3 py-1 rounded-full text-white font-thin text-sm  ${
-          data.status === "აქტიური" ? "bg-green-500 " : "bg-red-500 opacity-55"
-        }`}
+        className={'absolute top-2 left-2 px-3 py-1 rounded-full text-white font-thin text-sm  bg-red-500 opacity-55'}
       >
-        {data.status}
+      დასრულებული
       </div>
-      <div className="h-[250px] w-full bg-[#636363] "></div>
+      <div className="h-[200px] w-full bg-gray-200 flex items-center justify-center">
+         {data.mediaFile ? (
+          <Image
+            src={data.mediaFile}
+            alt={data.name}
+            width={140}
+            height={50}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <span className="text-gray-500">Not Found</span>
+        )}
+      </div>
       <div className="flex justify-between items-center px-4 pt-2 font-light text-black ">
         <div className="flex justify-start items-center">
-          <UserIcon className="w-4 h-4" /> {data.creator} შემქმნელი
+          <UserIcon className="w-4 h-4" /> {data.name} შემქმნელი
         </div>
+        
         <span>
-          {data.watch} ნახვა
+          {data.offerType} ნახვა
         </span>
       </div>
       <div className="px-4 mt-2 font-light text-black ">
@@ -53,7 +63,7 @@ const Card: React.FC<{ data: CardProps }> = ({ data }) => {
           <span className=" mt-1 block">
             ჯამური გადახდა
           </span>
-          <span> {data.totalBudget}</span>
+          <span> {data.paymentModel}</span>
         </div>
       </div>
       <div className="flex justify-center items-center gap-2 px-4 mt-4 pb-4 w-full">
