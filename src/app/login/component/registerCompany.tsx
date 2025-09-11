@@ -18,7 +18,17 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 
-const schema = yup.object().shape({
+type FormData = {
+    name: string;
+    budget: number;
+    description: string;
+    offerType: string;
+    paymentModel: number;
+    mediaFile: FileList | null | undefined;
+    mediaLink: string | null;
+  };
+
+  const schema = yup.object({
     name: yup.string().required("სავალდებულოა კომპანიის სახელი"),
     budget: yup
       .number()
@@ -32,41 +42,37 @@ const schema = yup.object().shape({
       .typeError("გადახდის მეთოდი უნდა იყოს რიცხვი")
       .positive("გადახდის მეთოდი უნდა იყოს დადებითი")
       .required("სავალდებულოა გადახდის მეთოდი"),
-    mediaFile: yup.mixed().nullable(),
+    mediaFile: yup
+      .mixed<FileList>()
+      .nullable() 
+      .test("fileSize", "ფაილის ზომა ძალიან დიდი", (value) => {
+        return !value || value.length <= 1; 
+      }),
     mediaLink: yup.string().url("არასწორი ლინკის ფორმატი").nullable(),
   });
   
-  type FormData = {
-    name: string;
-    budget: number;
-    description: string;
-    offerType: string;
-    paymentModel: number;
-    mediaFile?: FileList | null;
-    mediaLink?: string | null;
-  };
+  
+  
+
 const RegisterCompany = () => {
     const [submitted, setSubmitted] = useState(false);
     const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
     const [selectedCreatorType, setSelectedCreatorType] = useState<string>("");
   
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-      reset,
-    } = useForm<FormData>({
-      resolver: yupResolver(schema),
-      defaultValues: {
-        name: "",
-        budget: 0,
-        description: "",
-        offerType: "",
-        paymentModel: 0,
-        mediaFile: null,
-        mediaLink: "",
-      },
-    });
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
+        resolver: yupResolver(schema),
+        defaultValues: {
+          name: "",
+          budget: 0,
+          description: "",
+          offerType: "",
+          paymentModel: 0,
+          mediaFile: null,
+          mediaLink: null,
+        },
+      });
+      
+      
   
     const togglePlatform = (platform: string) => {
       setSelectedPlatforms((prev) =>
@@ -76,13 +82,9 @@ const RegisterCompany = () => {
       );
     };
   
-    const onSubmit: SubmitHandler<FormData> = async (data) => {
-      const fileName = data.mediaFile && data.mediaFile.length > 0 ? data.mediaFile[0].name : null;
-  
-      const payload = {
-        ...data,
-        mediaFile: fileName,
-      };
+    const onSubmit: SubmitHandler<FormData> = async(data) => {
+        const fileName = data.mediaFile?.[0]?.name ?? null;
+        const payload = { ...data, mediaFile: fileName };
   
       try {
         const res = await fetch("http://localhost:5000/companies", {
